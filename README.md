@@ -27,6 +27,18 @@ cloud.txt is a client-serverless customer receipt generator and sales analytics 
 └───────────────────────────────┘  └───────────────────────────────┘
 ```
 
+## 📸 Screenshots
+
+### Desktop View
+| Dashboard | Invoicing Form | Transaction History |
+| :---: | :---: | :---: |
+| ![Desktop Dashboard](screenshots/desktop_dashboard.png) | ![Desktop Receipt Form](screenshots/desktop_receipt_form.png) | ![Desktop Receipt History](screenshots/desktop_receipt_history.png) |
+
+### Mobile View
+| Mobile Dashboard |
+| :---: |
+| <img src="screenshots/mobile_dashboard.png" width="300" alt="Mobile Dashboard" /> |
+
 ## ✨ Key Features
 
 - **Google Sheets Database**: Completely serverless, auto-updating, zero-cost database.
