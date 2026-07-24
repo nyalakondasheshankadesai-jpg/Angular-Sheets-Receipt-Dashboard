@@ -1,0 +1,135 @@
+<div class="dashboard-wrapper">
+  <header class="dashboard-header">
+    <h1>cloud.txt Dashboard</h1>
+    <button class="btn-refresh glass-button" (click)="loadDashboard()" [disabled]="loading()">
+      <span class="icon" [class.spinning]="loading()">↻</span> Refresh
+    </button>
+  </header>
+
+  <div *ngIf="loading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading your dashboard...</p>
+  </div>
+
+  <div *ngIf="error()" class="error-state">
+    <p>{{ error() }}</p>
+    <button class="btn-retry glass-button" (click)="loadDashboard()">Retry</button>
+  </div>
+
+  <div *ngIf="dashboard() as data" class="dashboard-content">
+    
+    <!-- Stats Row -->
+    <div class="stats-grid">
+      <div class="glass-card stat-card" style="--anim-delay: 0.1s">
+        <h3>All Time Revenue</h3>
+        <div class="amount">₹{{ data.totalRevenue | number:'1.2-2' }}</div>
+        <div class="subtitle">{{ data.totalCount }} Receipts generated</div>
+      </div>
+      <div class="glass-card stat-card" style="--anim-delay: 0.2s">
+        <h3>This Month</h3>
+        <div class="amount">₹{{ data.monthRevenue | number:'1.2-2' }}</div>
+        <div class="subtitle">{{ data.monthCount }} Receipts generated</div>
+      </div>
+      <div class="glass-card stat-card" style="--anim-delay: 0.3s">
+        <h3>Today's Revenue</h3>
+        <div class="amount">₹{{ data.todayRevenue | number:'1.2-2' }}</div>
+        <div class="subtitle">{{ data.todayCount }} Receipts generated</div>
+      </div>
+    </div>
+
+    <!-- Charts and Breakdown Row -->
+    <div class="middle-grid">
+      <!-- Monthly Bar Chart (CSS only) -->
+      <div class="glass-card chart-card" style="--anim-delay: 0.4s">
+        <h3>Monthly Revenue</h3>
+        <div class="bar-chart-container">
+          <div class="bar-wrapper" *ngFor="let month of data.monthlyChart">
+            <div class="bar-value">₹{{ month.revenue | number:'1.0-0' }}</div>
+            <div class="bar">
+              <div class="bar-fill" [style.height.%]="(month.revenue / maxMonthlyRevenue()) * 100"></div>
+            </div>
+            <div class="bar-label">{{ month.month }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Payments & Top Items -->
+      <div class="side-panel">
+        <div class="glass-card payment-card" style="--anim-delay: 0.5s">
+          <h3>Payment Breakdown</h3>
+          <div class="breakdown-item">
+            <div class="breakdown-header">
+              <span>Cash ({{ cashPercentage() | number:'1.0-1' }}%)</span>
+              <span class="value">₹{{ data.cashAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill fill-primary" [style.width.%]="cashPercentage()"></div>
+            </div>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-header">
+              <span>Online ({{ onlinePercentage() | number:'1.0-1' }}%)</span>
+              <span class="value">₹{{ data.onlineAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill fill-accent" [style.width.%]="onlinePercentage()"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card top-items-card" style="--anim-delay: 0.6s">
+          <h3>Top 5 Items</h3>
+          <ul class="top-items-list">
+            <li *ngFor="let item of data.topItems; let i = index">
+              <div class="item-rank">
+                <ng-container *ngIf="i === 0">🥇</ng-container>
+                <ng-container *ngIf="i === 1">🥈</ng-container>
+                <ng-container *ngIf="i === 2">🥉</ng-container>
+                <span *ngIf="i > 2" class="rank-number">{{ i + 1 }}</span>
+              </div>
+              <div class="item-name">{{ item.name }}</div>
+              <div class="item-count">{{ item.count }} sold</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Receipts Table -->
+    <div class="glass-card table-card" style="--anim-delay: 0.7s">
+      <h3>Recent Receipts</h3>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Receipt #</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Payment</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let receipt of data.recentReceipts">
+              <td><strong>{{ receipt.receiptNumber }}</strong></td>
+              <td>{{ receipt.date | date:'shortDate' }}</td>
+              <td>{{ receipt.customerName || 'Walk-in' }}</td>
+              <td class="amount-cell">₹{{ receipt.total | number:'1.2-2' }}</td>
+              <td>
+                <span class="badge" [ngClass]="receipt.paymentMethod?.toLowerCase()">
+                  {{ receipt.paymentMethod }}
+                </span>
+              </td>
+              <td>
+                <a *ngIf="receipt.pdfLink" [href]="receipt.pdfLink" target="_blank" class="pdf-link">📄 View PDF</a>
+                <span *ngIf="!receipt.pdfLink" class="text-muted">No PDF</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

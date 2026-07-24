@@ -1,0 +1,73 @@
+<div class="history-container">
+  <header class="header">
+    <h1>📋 Receipt History</h1>
+  </header>
+
+  <div class="controls-section">
+    <div class="search-bar">
+      <input type="text"
+             [ngModel]="searchTerm()"
+             (ngModelChange)="searchTerm.set($event)"
+             placeholder="Search by name or receipt #..."
+             class="search-input" />
+    </div>
+
+    <div class="filter-chips">
+      <button class="chip" [class.active]="paymentFilter() === 'All'" (click)="setFilter('All')">All</button>
+      <button class="chip" [class.active]="paymentFilter() === 'Cash'" (click)="setFilter('Cash')">Cash</button>
+      <button class="chip" [class.active]="paymentFilter() === 'Online'" (click)="setFilter('Online')">Online</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-card">
+      <span class="stat-label">Total Receipts</span>
+      <span class="stat-value">{{ totalReceipts() }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Total Revenue</span>
+      <span class="stat-value">₹{{ totalRevenue() | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <div class="receipts-grid">
+    @if (filteredReceipts().length === 0) {
+      <div class="empty-state">
+        <p>No receipts found matching your criteria.</p>
+      </div>
+    } @else {
+      @for (receipt of filteredReceipts(); track receipt.receiptNumber) {
+        <div class="receipt-card">
+          <div class="card-header">
+            <span class="badge receipt-num">{{ receipt.receiptNumber }}</span>
+            <span class="date">{{ receipt.date | date:'mediumDate' }}</span>
+          </div>
+
+          <div class="card-body">
+            <h3 class="customer-name">{{ receipt.customerName }}</h3>
+            <p class="mobile-num">📞 {{ receipt.mobile }}</p>
+
+            <div class="items-list">
+              <p class="items-title">Items:</p>
+              <ul>
+                @for (item of parseItems(receipt.items, receipt.itemCosts); track item.name) {
+                  <li>{{ item.name }} — ₹{{ item.cost | number:'1.2-2' }}</li>
+                }
+              </ul>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <div class="total-amount">₹{{ receipt.total | number:'1.2-2' }}</div>
+            <div class="footer-actions">
+              <span class="badge payment-badge" [ngClass]="receipt.paymentMethod.toLowerCase()">
+                {{ receipt.paymentMethod }}
+              </span>
+              <button class="btn-view" (click)="viewPdf(receipt)">View PDF</button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

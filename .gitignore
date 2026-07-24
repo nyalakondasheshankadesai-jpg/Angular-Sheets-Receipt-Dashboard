@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+angular-app/node_modules/
+
+# Angular Build Outputs
+dist/
+angular-app/dist/
+.angular/
+angular-app/.angular/
+
+# IDE / System files
+.vscode/
+angular-app/.vscode/
+.DS_Store
+Thumbs.db
+
+# Secrets and Logs
+.env
+*.log
+*.tmp
+/scratch/

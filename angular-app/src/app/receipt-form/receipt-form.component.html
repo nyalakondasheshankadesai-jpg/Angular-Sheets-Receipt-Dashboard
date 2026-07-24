@@ -1,0 +1,100 @@
+<div class="receipt-form-container">
+  <div class="form-card">
+    <div class="header">
+      <h1>🧾 New Receipt</h1>
+      <p class="subtitle">cloud.txt</p>
+    </div>
+
+    <form [formGroup]="receiptForm" (ngSubmit)="onSubmit()">
+      <!-- Customer Details -->
+      <div class="section">
+        <h2>Customer Details</h2>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" formControlName="customerName" placeholder="Enter customer name" />
+        </div>
+        <div class="form-row">
+          <div class="form-group half">
+            <label>Mobile</label>
+            <input type="text" formControlName="customerMobile" placeholder="10-digit mobile" />
+          </div>
+          <div class="form-group half">
+            <label>Email <span class="optional">(Optional)</span></label>
+            <input type="email" formControlName="customerEmail" placeholder="Enter email" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Items Section -->
+      <div class="section items-section">
+        <h2>Items</h2>
+        <div formArrayName="items">
+          <div class="item-row" *ngFor="let item of items.controls; let i=index" [formGroupName]="i">
+            <div class="form-group flex-grow">
+              <input type="text" formControlName="name" placeholder="Item name" />
+            </div>
+            <div class="form-group cost-input">
+              <div class="input-with-icon">
+                <span class="currency">₹</span>
+                <input type="number" formControlName="cost" placeholder="0" min="0" />
+              </div>
+            </div>
+            <button type="button" class="btn-remove" (click)="removeItem(i)" [disabled]="items.length === 1">✕</button>
+          </div>
+        </div>
+        <button type="button" class="btn-add" (click)="addItem()">+ Add Item</button>
+      </div>
+
+      <!-- Live Totals -->
+      <div class="section totals-section">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span>₹{{ subtotal() | number:'1.2-2' }}</span>
+        </div>
+        <div class="total-row">
+          <span>GST (18%)</span>
+          <span>₹{{ gst() | number:'1.2-2' }}</span>
+        </div>
+        <div class="total-row grand-total">
+          <span>Grand Total</span>
+          <span>₹{{ grandTotal() | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="section payment-section">
+        <h2>Payment Method</h2>
+        <div class="payment-cards">
+          <div class="payment-card" 
+               [class.active]="receiptForm.get('paymentMethod')?.value === 'Cash'"
+               (click)="setPaymentMethod('Cash')">
+            <span class="icon">💵</span>
+            <span class="label">Cash</span>
+          </div>
+          <div class="payment-card" 
+               [class.active]="receiptForm.get('paymentMethod')?.value === 'Online'"
+               (click)="setPaymentMethod('Online')">
+            <span class="icon">📱</span>
+            <span class="label">Online</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn-submit" [disabled]="isSubmitting() || receiptForm.invalid">
+        <span *ngIf="!isSubmitting()">Generate Receipt</span>
+        <span *ngIf="isSubmitting()" class="loader"></span>
+      </button>
+
+      <!-- Messages -->
+      <div *ngIf="errorMessage()" class="message error">
+        {{ errorMessage() }}
+      </div>
+      <div *ngIf="successMessage()" class="message success">
+        <div class="success-icon">✓</div>
+        <p>Receipt <strong>{{ successMessage()?.receiptNumber }}</strong> created successfully!</p>
+        <a [href]="successMessage()?.pdfUrl" target="_blank" class="btn-link">View PDF Receipt</a>
+      </div>
+    </form>
+  </div>
+</div>

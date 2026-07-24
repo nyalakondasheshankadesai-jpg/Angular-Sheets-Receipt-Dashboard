@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    /* ─── Reset & Base ──────────────────── */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+      background: #f8f9fa;
+      color: #202124;
+      padding: 16px;
+      font-size: 14px;
+    }
+    
+    /* ─── Header ────────────────────────── */
+    .header {
+      text-align: center;
+      padding: 16px 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #1a73e8;
+    }
+    
+    .header h1 {
+      font-size: 20px;
+      color: #1a73e8;
+      margin-bottom: 4px;
+    }
+    
+    .header p {
+      font-size: 12px;
+      color: #5f6368;
+    }
+    
+    /* ─── Form Groups ───────────────────── */
+    .form-group {
+      margin-bottom: 14px;
+    }
+    
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #5f6368;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #202124;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+    }
+    
+    input::placeholder {
+      color: #9aa0a6;
+    }
+    
+    /* ─── Section Dividers ──────────────── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a73e8;
+      background: #e8f0fe;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 20px 0 12px 0;
+    }
+    
+    /* ─── Items Section ─────────────────── */
+    .items-container {
+      background: #fff;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    
+    .item-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      animation: slideIn 0.2s ease;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .item-row input.item-name {
+      flex: 2;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+    
+    .item-row input.item-cost {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 13px;
+      text-align: right;
+    }
+    
+    .btn-remove {
+      background: none;
+      border: none;
+      color: #ea4335;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+    
+    .btn-remove:hover {
+      background: #fce8e6;
+    }
+    
+    .btn-add-item {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background: #e8f0fe;
+      border: 1px dashed #1a73e8;
+      border-radius: 6px;
+      color: #1a73e8;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .btn-add-item:hover {
+      background: #d2e3fc;
+    }
+    
+    /* ─── Totals Display ────────────────── */
+    .totals {
+      background: #fff;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 13px;
+      color: #5f6368;
+    }
+    
+    .total-row.grand-total {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a73e8;
+      border-top: 2px solid #1a73e8;
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+    
+    /* ─── Payment Method ────────────────── */
+    .payment-options {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    
+    .payment-option {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      border: 2px solid #dadce0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fff;
+    }
+    
+    .payment-option:hover {
+      border-color: #1a73e8;
+    }
+    
+    .payment-option.selected {
+      border-color: #1a73e8;
+      background: #e8f0fe;
+      color: #1a73e8;
+    }
+    
+    .payment-option .icon {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    
+    .payment-option .label {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    /* ─── Submit Button ─────────────────── */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #1a73e8;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-submit:hover {
+      background: #1557b0;
+    }
+    
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+    
+    .btn-submit:disabled {
+      background: #dadce0;
+      cursor: not-allowed;
+    }
+    
+    /* ─── Status Messages ───────────────── */
+    .status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .status.success {
+      display: block;
+      background: #e6f4ea;
+      color: #137333;
+      border: 1px solid #a8dab5;
+    }
+    
+    .status.error {
+      display: block;
+      background: #fce8e6;
+      color: #c5221f;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .status.loading {
+      display: block;
+      background: #e8f0fe;
+      color: #1a73e8;
+      border: 1px solid #aecbfa;
+      text-align: center;
+    }
+    
+    /* ─── Spinner ────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #1a73e8;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🧾 cloud.txt</h1>
+    <p>Customer Receipt Generator</p>
+  </div>
+
+  <!-- Customer Info -->
+  <div class="section-title">👤 Customer Details</div>
+  
+  <div class="form-group">
+    <label>Customer Name *</label>
+    <input type="text" id="customerName" placeholder="Enter customer name">
+  </div>
+  
+  <div class="form-group">
+    <label>Mobile Number *</label>
+    <input type="tel" id="mobile" placeholder="+91 XXXXXXXXXX" maxlength="15">
+  </div>
+  
+  <div class="form-group">
+    <label>Email (optional)</label>
+    <input type="email" id="email" placeholder="customer@email.com">
+  </div>
+
+  <!-- Items -->
+  <div class="section-title">🛒 Items</div>
+  
+  <div class="items-container">
+    <div id="itemsWrapper">
+      <div class="item-row">
+        <input type="text" class="item-name" placeholder="Item name" />
+        <input type="number" class="item-cost" placeholder="₹ Cost" min="0" step="0.01" />
+        <button class="btn-remove" onclick="removeItem(this)" title="Remove">✕</button>
+      </div>
+    </div>
+    <button class="btn-add-item" onclick="addItem()">+ Add Item</button>
+  </div>
+
+  <!-- Live Totals -->
+  <div class="totals">
+    <div class="total-row">
+      <span>Subtotal</span>
+      <span id="subtotalDisplay">₹ 0.00</span>
+    </div>
+    <div class="total-row">
+      <span>GST (18%)</span>
+      <span id="gstDisplay">₹ 0.00</span>
+    </div>
+    <div class="total-row grand-total">
+      <span>Total</span>
+      <span id="totalDisplay">₹ 0.00</span>
+    </div>
+  </div>
+
+  <!-- Payment Method -->
+  <div class="section-title">💳 Payment Method</div>
+  
+  <div class="payment-options">
+    <div class="payment-option selected" onclick="selectPayment(this, 'Cash')">
+      <span class="icon">💵</span>
+      <span class="label">Cash</span>
+    </div>
+    <div class="payment-option" onclick="selectPayment(this, 'Online')">
+      <span class="icon">📱</span>
+      <span class="label">Online</span>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button class="btn-submit" id="submitBtn" onclick="submitReceipt()">
+    🧾 Generate Receipt & PDF
+  </button>
+
+  <!-- Status -->
+  <div class="status" id="statusMsg"></div>
+
+  <script>
+    let selectedPayment = "Cash";
+
+    // ─── Add Item Row ───────────────────────
+    function addItem() {
+      const wrapper = document.getElementById("itemsWrapper");
+      const row = document.createElement("div");
+      row.className = "item-row";
+      row.innerHTML = 
+        '<input type="text" class="item-name" placeholder="Item name" />' +
+        '<input type="number" class="item-cost" placeholder="₹ Cost" min="0" step="0.01" />' +
+        '<button class="btn-remove" onclick="removeItem(this)" title="Remove">✕</button>';
+      wrapper.appendChild(row);
+      
+      // Add event listeners for live total
+      const costInput = row.querySelector(".item-cost");
+      costInput.addEventListener("input", updateTotals);
+      
+      // Focus on the new item name
+      row.querySelector(".item-name").focus();
+    }
+
+    // ─── Remove Item Row ────────────────────
+    function removeItem(btn) {
+      const wrapper = document.getElementById("itemsWrapper");
+      if (wrapper.children.length > 1) {
+        btn.parentElement.remove();
+        updateTotals();
+      }
+    }
+
+    // ─── Payment Selection ──────────────────
+    function selectPayment(el, method) {
+      document.querySelectorAll(".payment-option").forEach(function(opt) {
+        opt.classList.remove("selected");
+      });
+      el.classList.add("selected");
+      selectedPayment = method;
+    }
+
+    // ─── Live Totals ────────────────────────
+    function updateTotals() {
+      const costs = document.querySelectorAll(".item-cost");
+      let subtotal = 0;
+      costs.forEach(function(input) {
+        const val = parseFloat(input.value);
+        if (!isNaN(val)) subtotal += val;
+      });
+      
+      const gst = subtotal * 0.18;
+      const total = subtotal + gst;
+      
+      document.getElementById("subtotalDisplay").textContent = "₹ " + subtotal.toFixed(2);
+      document.getElementById("gstDisplay").textContent = "₹ " + gst.toFixed(2);
+      document.getElementById("totalDisplay").textContent = "₹ " + total.toFixed(2);
+    }
+
+    // Attach live total listeners to initial row
+    document.querySelector(".item-cost").addEventListener("input", updateTotals);
+
+    // ─── Submit Receipt ─────────────────────
+    function submitReceipt() {
+      const statusEl = document.getElementById("statusMsg");
+      const submitBtn = document.getElementById("submitBtn");
+      
+      // Gather form data
+      const customerName = document.getElementById("customerName").value.trim();
+      const mobile = document.getElementById("mobile").value.trim();
+      const email = document.getElementById("email").value.trim();
+      
+      // Validate
+      if (!customerName) {
+        showStatus("error", "❌ Customer name is required.");
+        return;
+      }
+      if (!mobile) {
+        showStatus("error", "❌ Mobile number is required.");
+        return;
+      }
+      
+      // Gather items
+      const items = [];
+      const rows = document.querySelectorAll(".item-row");
+      let hasItems = false;
+      
+      for (let i = 0; i < rows.length; i++) {
+        const name = rows[i].querySelector(".item-name").value.trim();
+        const cost = rows[i].querySelector(".item-cost").value.trim();
+        
+        if (name || cost) {
+          if (!name) {
+            showStatus("error", "❌ Item " + (i + 1) + " needs a name.");
+            return;
+          }
+          if (!cost || isNaN(parseFloat(cost)) || parseFloat(cost) < 0) {
+            showStatus("error", "❌ Item " + (i + 1) + " has invalid cost.");
+            return;
+          }
+          items.push({ name: name, cost: parseFloat(cost) });
+          hasItems = true;
+        }
+      }
+      
+      if (!hasItems) {
+        showStatus("error", "❌ Add at least one item.");
+        return;
+      }
+      
+      // Build form data
+      const formData = {
+        customerName: customerName,
+        mobile: mobile,
+        email: email,
+        items: items,
+        paymentMethod: selectedPayment
+      };
+      
+      // Show loading
+      showStatus("loading", '<span class="spinner"></span> Generating receipt & PDF...');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "⏳ Processing...";
+      
+      // Call server-side function
+      google.script.run
+        .withSuccessHandler(function(result) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "🧾 Generate Receipt & PDF";
+          
+          if (result.success) {
+            showStatus("success", 
+              "✅ " + result.message + "<br>" +
+              "💰 Total: ₹ " + result.total.toFixed(2) + "<br>" +
+              '<a href="' + result.pdfLink + '" target="_blank">📄 View PDF</a>'
+            );
+            resetForm();
+          } else {
+            showStatus("error", "❌ " + result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "🧾 Generate Receipt & PDF";
+          showStatus("error", "❌ Server error: " + error.message);
+        })
+        .processReceipt(formData);
+    }
+
+    // ─── Show Status Message ────────────────
+    function showStatus(type, message) {
+      const el = document.getElementById("statusMsg");
+      el.className = "status " + type;
+      el.innerHTML = message;
+    }
+
+    // ─── Reset Form ─────────────────────────
+    function resetForm() {
+      document.getElementById("customerName").value = "";
+      document.getElementById("mobile").value = "";
+      document.getElementById("email").value = "";
+      
+      // Reset items to single empty row
+      const wrapper = document.getElementById("itemsWrapper");
+      wrapper.innerHTML = 
+        '<div class="item-row">' +
+        '<input type="text" class="item-name" placeholder="Item name" />' +
+        '<input type="number" class="item-cost" placeholder="₹ Cost" min="0" step="0.01" />' +
+        '<button class="btn-remove" onclick="removeItem(this)" title="Remove">✕</button>' +
+        '</div>';
+      
+      // Re-attach listener
+      wrapper.querySelector(".item-cost").addEventListener("input", updateTotals);
+      updateTotals();
+      
+      // Reset payment
+      selectPayment(document.querySelector(".payment-option"), "Cash");
+    }
+  </script>
+
+</body>
+</html>

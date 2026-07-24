@@ -1,0 +1,58 @@
+<!-- Navigation Shell -->
+<nav class="sidebar" [class.mobile-open]="isMobileMenuOpen">
+  <!-- Brand -->
+  <div class="brand">
+    <div class="brand-icon">☁️</div>
+    <div class="brand-text">
+      <span class="brand-name">cloud.txt</span>
+      <span class="brand-sub">Receipt System</span>
+    </div>
+  </div>
+
+  <!-- Nav Links -->
+  <ul class="nav-links">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMobileMenu()">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/new-receipt" routerLinkActive="active" (click)="closeMobileMenu()">
+        <span class="nav-icon">🧾</span>
+        <span class="nav-label">New Receipt</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/history" routerLinkActive="active" (click)="closeMobileMenu()">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">History</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Footer -->
+  <div class="nav-footer">
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span>System Active</span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" (click)="toggleMobileMenu()" [class.open]="isMobileMenuOpen">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<!-- Mobile Overlay -->
+@if (isMobileMenuOpen) {
+  <div class="mobile-overlay" (click)="closeMobileMenu()"></div>
+}
+
+<!-- Main Content -->
+<main class="main-content">
+  <router-outlet />
+</main>
